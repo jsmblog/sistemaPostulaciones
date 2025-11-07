@@ -1,9 +1,10 @@
-// src/pages/SignUp.jsx (adaptado)
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase/connection";
 import { insertUserData } from "../services/insert";
 import { useUser } from "../context/UserContext";
+import './SignUp.css';
 
 export const SignUp = ({ rol }) => {
   const navigate = useNavigate();
@@ -106,65 +107,77 @@ export const SignUp = ({ rol }) => {
   };
 
   return (
-    <div>
-      <h2>Regístrese ahora</h2>
-      <form onSubmit={handleSubmitRegister}>
-        <div>
-          <label>{isStudent ? "Nombre Completo" : "Nombre de la empresa"}</label>
-          <input
-            type="text"
-            name="name"
-            value={dataForm.name}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            minLength={3}
-          />
-        </div>
+    <div className="signup-page">
+      <div className="signup-container">
+        <h2 className="signup-title">Regístrese ahora</h2>
+        <form className="signup-form" onSubmit={handleSubmitRegister}>
+          <div className="signup-form-group">
+            <label htmlFor="name">
+              {isStudent ? "Nombre Completo" : "Nombre de la empresa"}
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={dataForm.name}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              minLength={3}
+              placeholder={isStudent ? "Ingrese su nombre completo" : "Ingrese el nombre de la empresa"}
+            />
+          </div>
 
-        <div>
-          <label>Correo Electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={dataForm.email}
-            onChange={handleChange}
-            required
-            disabled={loading}
-          />
-        </div>
+          <div className="signup-form-group">
+            <label htmlFor="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={dataForm.email}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
 
-        <div>
-          <label>Contraseña</label>
-          <input
-            type="password"
-            name="password"
-            value={dataForm.password}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            minLength={6}
-            placeholder="Mínimo 6 caracteres"
-          />
-        </div>
+          <div className="signup-form-group">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={dataForm.password}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              minLength={6}
+              placeholder="Mínimo 6 caracteres"
+            />
+          </div>
 
-        <div>
-          <label>{isStudent ? "Teléfono de contacto" : "Teléfono de la empresa"}</label>
-          <input
-            type="tel"
-            name="contact"
-            value={dataForm.contact}
-            onChange={handleChange}
-            placeholder="+593 99 999 9999"
-            required
-            disabled={loading}
-          />
-        </div>
+          <div className="signup-form-group">
+            <label htmlFor="contact">
+              {isStudent ? "Teléfono de contacto" : "Teléfono de la empresa"}
+            </label>
+            <input
+              type="tel"
+              id="contact"
+              name="contact"
+              value={dataForm.contact}
+              onChange={handleChange}
+              placeholder="+593 99 999 9999"
+              required
+              disabled={loading}
+            />
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Registrando..." : "Registrarse"}
-        </button>
-      </form>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registrando..." : "Registrarse"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

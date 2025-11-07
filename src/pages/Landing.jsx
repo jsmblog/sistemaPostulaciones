@@ -35,7 +35,6 @@ export const Landing = ({ handleRoleSelection }) => {
         return;
       }
 
-      // Extraer rol desde user_metadata
       const role = user.user_metadata?.rol ?? user.user_metadata?.role ?? null;
 
       // Guardar en contexto
