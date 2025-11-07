@@ -52,6 +52,8 @@ export const Landing = ({ handleRoleSelection }) => {
         navigate("/student-dashboard");
       } else if (role === "company") {
         navigate("/company-dashboard");
+      } else if( role === "admin"){
+        navigate("/admin-dashboard");
       } else {
         navigate("/home");
       }
