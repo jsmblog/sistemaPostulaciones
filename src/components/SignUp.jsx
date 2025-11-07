@@ -25,84 +25,82 @@ export const SignUp = ({ rol }) => {
     }));
   };
 
-  const handleSubmitRegister = async (event) => {
-    event.preventDefault();
-    
-    // Validación básica
-    if (dataForm.password.length < 6) {
-      alert("⚠ La contraseña debe tener al menos 6 caracteres");
+  // En SignUp.jsx, REEMPLAZA el handleSubmitRegister:
+
+const handleSubmitRegister = async (event) => {
+  event.preventDefault();
+  
+  if (dataForm.password.length < 6) {
+    alert("⚠ La contraseña debe tener al menos 6 caracteres");
+    return;
+  }
+  
+  setLoading(true);
+  
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: dataForm.email,
+      password: dataForm.password,
+      options: {
+        data: {
+          name: dataForm.name,
+          rol,
+          contact: dataForm.contact
+        },
+        emailRedirectTo: `${window.location.origin}/waiting-room`  // AÑADE ESTO
+      }
+    });
+
+    if (error) {
+      alert("⚠ Ha ocurrido un error: " + error.message);
+      setLoading(false);
       return;
     }
-    
-    setLoading(true); // Bloquear el botón
-    
-    try {
-      const { data, error } = await supabase.auth.signUp({
+
+    if (data.user && !data.user.identities?.length) {
+      alert("⚠ Este correo ya está registrado. Por favor inicia sesión.");
+      setLoading(false);
+      return;
+    }
+
+    if (data.user) {
+      const insertResult = await insertUserData({
+        id: data.user.id,
+        name: dataForm.name,
         email: dataForm.email,
-        password: dataForm.password,
-        options: {
-          data: {
-            name: dataForm.name,
-            rol,
-            contact: dataForm.contact
-          },
-        }
+        contact: dataForm.contact,
+        rol
       });
 
-      if (error) {
-        alert("⚠ Ha ocurrido un error: " + error.message);
+      if (insertResult.error) {
+        console.error('Error guardando datos adicionales:', insertResult.error);
+        alert("⚠ Error al guardar información adicional.");
         setLoading(false);
         return;
       }
-
-      // Verificar si el usuario ya existe
-      if (data.user && !data.user.identities?.length) {
-        alert("⚠ Este correo ya está registrado. Por favor inicia sesión.");
-        setLoading(false);
-        return;
-      }
-
-      if (data.user) {
-        // Insertar datos adicionales en la tabla correspondiente
-        const insertResult = await insertUserData({
-          id: data.user.id,
-          name: dataForm.name,
-          email: dataForm.email,
-          contact: dataForm.contact,
-          rol
-        });
-
-        if (insertResult.error) {
-          console.error('Error guardando datos adicionales:', insertResult.error);
-          alert("⚠ Error al guardar información adicional. Contacta a soporte.");
-          setLoading(false);
-          return;
-        }
-        
-        // Cerrar sesión para que espere en waiting-room
-        await supabase.auth.signOut();
-        
-        alert('✅ Registro exitoso. Por favor revisa tu correo para verificar la cuenta.');
-        
-        // Limpiar formulario
-        setDataForm({
-          name: '',
-          email: '',
-          password: '',
-          contact: '',
-        });
-        
-        // Navegar a waiting room DESPUÉS de cerrar sesión
-        navigate("/waiting-room", { replace: true });
-      }
-
-    } catch (err) {
-      console.error("Error al registrar:", err);
-      alert("⚠ Ha ocurrido un error inesperado al registrarte.");
-    } finally {
-      setLoading(false); // Desbloquear el botón
+      
+      // YA NO CIERRES LA SESIÓN - déjalo autenticado
+      // await supabase.auth.signOut(); // ❌ ELIMINA ESTA LÍNEA
+      
+      alert('✅ Registro exitoso. Por favor revisa tu correo para verificar la cuenta.');
+      
+      setDataForm({
+        name: '',
+        email: '',
+        password: '',
+        contact: '',
+      });
+      
+      navigate("/waiting-room", { replace: true });
     }
-  };
+
+  } catch (err) {
+    console.error("Error al registrar:", err);
+    alert("⚠ Ha ocurrido un error inesperado al registrarte.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="signup-page">
