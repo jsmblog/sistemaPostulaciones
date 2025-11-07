@@ -6,7 +6,7 @@ import "./Landing.css";
 export const Landing = ({ handleRoleSelection }) => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-
+  
   const navigateToPaths = (path, role) => {
     if (role) {
       handleRoleSelection(role);
