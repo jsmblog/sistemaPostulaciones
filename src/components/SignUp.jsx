@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../supabase/connection";
-import { insertUserData } from "../services/insert";
+
 import { useUser } from "../context/UserContext";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
