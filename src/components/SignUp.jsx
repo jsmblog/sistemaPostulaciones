@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/connection';
+
 export const SignUp = ({ rol }) => {
   const navigate = useNavigate();
   const isStudent = rol === 'student';
@@ -9,38 +10,31 @@ export const SignUp = ({ rol }) => {
     name: '',
     email: '',
     password: '',
-    contact:'',
+    contact: '',
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'name') {
-      setDataForm(prev => ({
-        ...prev,
-        options: {
-          data: {
-            nombre: value
-          }
-        }
-      }));
-    } else {
-      setDataForm(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setDataForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmitRegister = async (event) => {
     event.preventDefault();
     try {
-      const name = dataForm.name 
-
       const { data, error } = await supabase.auth.signUp(
-        { email: dataForm.email, password: dataForm.password },
+        { 
+          email: dataForm.email, 
+          password: dataForm.password 
+        },
         {
-          data: { name, rol , email: dataForm.email },
+          data: { 
+            name: dataForm.name,
+            rol,
+            email: dataForm.email 
+          },
           redirectTo: `${window.location.origin}/confirm-email`
         }
       );
@@ -55,9 +49,9 @@ export const SignUp = ({ rol }) => {
         name: '',
         email: '',
         password: '',
-        contact:'',
+        contact: '',
       });
-      navigate("/panel");
+      navigate("/waiting-room");
 
       console.log("Data de registro (auth):", data);
 
@@ -79,7 +73,7 @@ export const SignUp = ({ rol }) => {
           type="text" 
           id="name" 
           name="name" 
-          value={dataForm.options.data.nombre}
+          value={dataForm.name}
           onChange={handleChange}
           required
         />
@@ -110,4 +104,3 @@ export const SignUp = ({ rol }) => {
     </main>
   );
 };
-// ...existing code...
