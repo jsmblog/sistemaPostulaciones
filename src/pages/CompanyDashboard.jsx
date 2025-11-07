@@ -14,6 +14,7 @@ export const CompanyDashboard = () => {
     area: '',
     duracion: '',
     modalidad_id: '',
+    localidad: '',
     requisitos: ''
   });
 
@@ -106,7 +107,7 @@ export const CompanyDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.area || !formData.duracion || !formData.modalidad_id || !formData.requisitos) {
+    if (!formData.area || !formData.duracion || !formData.modalidad_id || !formData.localidad || !formData.requisitos) {
       alert('Por favor completa todos los campos');
       return;
     }
@@ -120,6 +121,7 @@ export const CompanyDashboard = () => {
             area: formData.area,
             duracion: formData.duracion,
             modalidad_id: formData.modalidad_id,
+            localidad: formData.localidad,
             requisitos: formData.requisitos,
             updated_at: new Date().toISOString()
           })
@@ -136,6 +138,7 @@ export const CompanyDashboard = () => {
             area: formData.area,
             duracion: formData.duracion,
             modalidad_id: formData.modalidad_id,
+            localidad: formData.localidad,
             requisitos: formData.requisitos
           }]);
 
@@ -148,6 +151,7 @@ export const CompanyDashboard = () => {
         area: '',
         duracion: '',
         modalidad_id: '',
+        localidad: '',
         requisitos: ''
       });
       setShowForm(false);
@@ -164,6 +168,7 @@ export const CompanyDashboard = () => {
       area: postulacion.area,
       duracion: postulacion.duracion,
       modalidad_id: postulacion.modalidad_id,
+      localidad: postulacion.localidad || '',
       requisitos: postulacion.requisitos
     });
     setEditingId(postulacion.id);
@@ -195,6 +200,7 @@ export const CompanyDashboard = () => {
       area: '',
       duracion: '',
       modalidad_id: '',
+      localidad: '',
       requisitos: ''
     });
     setShowForm(false);
@@ -275,6 +281,19 @@ export const CompanyDashboard = () => {
               </div>
 
               <div className="form-group">
+                <label htmlFor="localidad">Localidad *</label>
+                <input
+                  type="text"
+                  id="localidad"
+                  name="localidad"
+                  value={formData.localidad}
+                  onChange={handleChange}
+                  placeholder="Ej: Manta, Portoviejo, Guayaquil, etc."
+                  required
+                />
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="requisitos">Requisitos *</label>
                 <textarea
                   id="requisitos"
@@ -339,6 +358,12 @@ export const CompanyDashboard = () => {
                       <span className="info-label">Modalidad:</span>
                       <span className="info-value">
                         {postulacion.modalidades?.nombre || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="card-info">
+                      <span className="info-label">Localidad:</span>
+                      <span className="info-value">
+                        {postulacion.localidad || 'No especificada'}
                       </span>
                     </div>
                     <div className="card-info-full">
