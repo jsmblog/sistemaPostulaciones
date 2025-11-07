@@ -1,20 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from './supabaseClient'; // Ajusta la ruta según tu proyecto
-import { insert_Admin } from './services'; // Ajusta la ruta según tu proyecto
-
+import { supabase } from '../supabase/connection';
 export const SignUp = ({ rol }) => {
   const navigate = useNavigate();
   const isStudent = rol === 'student';
   
   const [dataForm, setDataForm] = useState({
+    name: '',
     email: '',
     password: '',
-    options: {
-      data: {
-        nombre: '',
-      }
-    }
+    contact:'',
   });
 
   const handleChange = (e) => {
@@ -38,35 +33,37 @@ export const SignUp = ({ rol }) => {
   };
 
   const handleSubmitRegister = async (event) => {
+    event.preventDefault();
     try {
-      event.preventDefault();
+      const name = dataForm.name 
 
-      // registrar al usuario
-      const { data, error } = await supabase.auth.signUp(dataForm);
+      const { data, error } = await supabase.auth.signUp(
+        { email: dataForm.email, password: dataForm.password },
+        {
+          data: { name, rol , email: dataForm.email },
+          redirectTo: `${window.location.origin}/confirm-email`
+        }
+      );
 
       if (error) {
         alert("⚠ Ha ocurrido un error: " + error.message);
-        return; // 🚫 no seguimos
-      } else if (data.user?.identities?.length === 0) {
-        alert('Este usuario ya existe');
-        return; // 🚫 no seguimos
-      } else {
-        const admin = {
-          id: data.user.id,
-          nombre: dataForm.options.data.nombre || dataForm.email.split('@')[0],
-          email: dataForm.email,
-          rol,
-        };
-        console.log("Datos enviados a la tabla admin:", admin);
-        await insert_Admin(admin);
-        alert('¡Éxito al registrarte! Por favor, revisa tu correo.');
-        navigate("/panel");
+        return;
       }
 
-      console.log("Data de registro:", data);
+      alert('Registro exitoso. Por favor revisa tu correo para verificar la cuenta.');
+      setDataForm({
+        name: '',
+        email: '',
+        password: '',
+        contact:'',
+      });
+      navigate("/panel");
 
-    } catch (error) {
-      console.log("Error al registrar:", error.message);
+      console.log("Data de registro (auth):", data);
+
+    } catch (err) {
+      console.log("Error al registrar:", err?.message || err);
+      alert("⚠ Ha ocurrido un error inesperado al registrarte.");
     }
   };
 
@@ -113,3 +110,4 @@ export const SignUp = ({ rol }) => {
     </main>
   );
 };
+// ...existing code...
