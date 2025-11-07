@@ -1,103 +1,109 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabase/connection';
-import { insertUserData } from '../services/insert';
+// src/pages/SignUp.jsx (adaptado)
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase/connection";
+import { insertUserData } from "../services/insert";
+import { useUser } from "../context/UserContext";
 
 export const SignUp = ({ rol }) => {
   const navigate = useNavigate();
-  const isStudent = rol === 'student';
-  
+  const isStudent = rol === "student";
+  const { setUser } = useUser();
+
   const [dataForm, setDataForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    contact: '',
+    name: "",
+    email: "",
+    password: "",
+    contact: "",
   });
-  
-  const [loading, setLoading] = useState(false); // NUEVO: Estado de carga
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setDataForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setDataForm(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmitRegister = async (event) => {
+    event.preventDefault();
 
-const handleSubmitRegister = async (event) => {
-  event.preventDefault();
-  
-  if (dataForm.password.length < 6) {
-    alert("⚠ La contraseña debe tener al menos 6 caracteres");
-    return;
-  }
-  
-  setLoading(true);
-  
-  try {
-    const { data, error } = await supabase.auth.signUp({
-      email: dataForm.email,
-      password: dataForm.password,
-      options: {
-        data: {
-          name: dataForm.name,
-          rol,
-          contact: dataForm.contact
-        },
-        emailRedirectTo: `${window.location.origin}/waiting-room`  // AÑADE ESTO
-      }
-    });
-
-    if (error) {
-      alert("⚠ Ha ocurrido un error: " + error.message);
-      setLoading(false);
+    if (dataForm.password.length < 6) {
+      alert("⚠ La contraseña debe tener al menos 6 caracteres");
       return;
     }
 
-    if (data.user && !data.user.identities?.length) {
-      alert("⚠ Este correo ya está registrado. Por favor inicia sesión.");
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
 
-    if (data.user) {
-      const insertResult = await insertUserData({
-        id: data.user.id,
-        name: dataForm.name,
+    try {
+      const { data, error } = await supabase.auth.signUp({
         email: dataForm.email,
-        contact: dataForm.contact,
-        rol
+        password: dataForm.password,
+        options: {
+          data: {
+            name: dataForm.name,
+            rol, 
+            contact: dataForm.contact,
+          },
+          emailRedirectTo: `${window.location.origin}/waiting-room`,
+        },
       });
 
-      if (insertResult.error) {
-        console.error('Error guardando datos adicionales:', insertResult.error);
-        alert("⚠ Error al guardar información adicional.");
+      if (error) {
+        alert("⚠ Ha ocurrido un error: " + error.message);
         setLoading(false);
         return;
       }
-      
-       await supabase.auth.signOut(); 
-      
-      alert('✅ Registro exitoso. Por favor revisa tu correo para verificar la cuenta.');
-      
-      setDataForm({
-        name: '',
-        email: '',
-        password: '',
-        contact: '',
-      });
-      
-      navigate("/waiting-room", { replace: true });
-    }
 
-  } catch (err) {
-    console.error("Error al registrar:", err);
-    alert("⚠ Ha ocurrido un error inesperado al registrarte.");
-  } finally {
-    setLoading(false);
-  }
-};
+      if (data.user && !data.user.identities?.length) {
+        alert("⚠ Este correo ya está registrado. Por favor inicia sesión.");
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        const insertResult = await insertUserData({
+          id: data.user.id,
+          name: dataForm.name,
+          email: dataForm.email,
+          contact: dataForm.contact,
+          rol,
+        });
+
+        if (insertResult.error) {
+          console.error("Error guardando datos adicionales:", insertResult.error);
+          alert("⚠ Error al guardar información adicional.");
+          setLoading(false);
+          return;
+        }
+
+        setUser({
+          id: data.user.id,
+          email: data.user.email,
+          name: dataForm.name,
+          role: rol,
+          contact: dataForm.contact,
+        });
+
+        await supabase.auth.signOut();
+
+        alert("✅ Registro exitoso. Por favor revisa tu correo para verificar la cuenta.");
+
+        setDataForm({
+          name: "",
+          email: "",
+          password: "",
+          contact: "",
+        });
+
+        navigate("/waiting-room", { replace: true });
+      }
+    } catch (err) {
+      console.error("Error al registrar:", err);
+      alert("⚠ Ha ocurrido un error inesperado al registrarte.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -156,7 +162,7 @@ const handleSubmitRegister = async (event) => {
         </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? 'Registrando...' : 'Registrarse'}
+          {loading ? "Registrando..." : "Registrarse"}
         </button>
       </form>
     </div>

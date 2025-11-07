@@ -2,11 +2,67 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PopUp } from "../components/PopUp";
 import "./Landing.css";
+import { useUser } from "../context/UserContext";
+import { supabase } from "../supabase/connection";
 
 export const Landing = ({ handleRoleSelection }) => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [form, setForm] = useState({ email: "", password: "" });
+  const { setUser } = useUser();
+  const [loading, setLoading] = useState(false);
+  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
+      });
+
+      if (error) {
+        alert("⚠ Error al iniciar sesión: " + error.message);
+        return;
+      }
+
+      const user = data?.user;
+      if (!user) {
+        alert("⚠ No se ha recibido información del usuario.");
+        return;
+      }
+
+      // Extraer rol desde user_metadata
+      const role = user.user_metadata?.rol ?? user.user_metadata?.role ?? null;
+
+      // Guardar en contexto
+      setUser({
+        id: user.id,
+        email: user.email,
+        name: user.user_metadata?.name ?? null,
+        role,
+        contact: user.user_metadata?.contact ?? null,
+      });
+
+      // Navegar según rol (ajusta rutas a tu app)
+      if (role === "student") {
+        navigate("/student-dashboard");
+      } else if (role === "company") {
+        navigate("/company-dashboard");
+      } else {
+        navigate("/home");
+      }
+    } catch (err) {
+      console.error("Error de login:", err);
+      alert("Ha ocurrido un error inesperado al iniciar sesión.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const navigateToPaths = (path, role) => {
     if (role) {
       handleRoleSelection(role);
@@ -16,12 +72,7 @@ export const Landing = ({ handleRoleSelection }) => {
 
   const handleRoleSelect = (role) => {
     navigateToPaths("/sign-up", role);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    navigateToPaths("/login");
-  };
+  }
 
   return (
     <main className="landing-page">
@@ -41,6 +92,8 @@ export const Landing = ({ handleRoleSelection }) => {
                 id="email"
                 type="email"
                 name="email"
+                value={form.email}
+                onChange={handleChange}
                 placeholder="nombre.apellido@uleam.edu.ec"
                 required
               />
@@ -50,12 +103,14 @@ export const Landing = ({ handleRoleSelection }) => {
                 id="password"
                 type="password"
                 name="password"
+                value={form.password}
+                onChange={handleChange}
                 placeholder="Ingresa tu contraseña"
                 required
               />
 
-              <button type="submit" className="btn-primary">
-                Iniciar sesión
+              <button disabled={loading} type="submit" className="btn-primary">
+                {loading ? "Iniciando sesión..." : "Iniciar sesión"}
               </button>
             </form>
 
