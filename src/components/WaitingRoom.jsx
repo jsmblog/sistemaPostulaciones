@@ -86,12 +86,32 @@ export const WaitingRoom = () => {
     const userRol = user.user_metadata?.rol;
     console.log('Rol del usuario:', userRol);
     
+    // Verificar si es administrador en la tabla de administradores
+    let isAdmin = false;
+    if (userRol === 'admin' || !userRol) {
+      try {
+        const { data: adminData, error: adminError } = await supabase
+          .from('administradores')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (adminData && !adminError) {
+          isAdmin = true;
+        }
+      } catch (error) {
+        console.log('No es administrador o error verificando:', error);
+      }
+    }
+    
     setMessage('✅ Email confirmado. Redirigiendo...');
     
     // Pequeño delay para que el usuario vea el mensaje
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    if (userRol === 'student') {
+    if (isAdmin) {
+      navigate('/admin-dashboard', { replace: true });
+    } else if (userRol === 'student') {
       navigate('/student-dashboard', { replace: true });
     } else if (userRol === 'company') {
       navigate('/company-dashboard', { replace: true });

@@ -1,0 +1,120 @@
+/* === General Layout === */
+.dashboard-container {
+    min-height: 100vh;
+    background-color: #f8f8f8;
+    padding: 20px;
+  }
+  
+  .dashboard-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 30px 40px;
+  }
+  
+  /* === Header === */
+  .dashboard-header {
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .dashboard-header h1 {
+    color: #b30000;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .dashboard-header p {
+    color: #666;
+    font-size: 1rem;
+  }
+  
+  /* === Loading Screen === */
+  .loading-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f8f8f8;
+    color: #555;
+    font-size: 1.1rem;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.5;
+    }
+  }
+  
+  /* === Cards Grid === */
+  .postulaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  /* === Card Style === */
+  .postulacion-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+  }
+  
+  .postulacion-card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+  }
+  
+  .card-content h3 {
+    color: #b30000;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .card-content p {
+    color: #555;
+    font-size: 0.95rem;
+    margin: 5px 0;
+  }
+  
+  /* === Button === */
+  .btn-postular {
+    background-color: #c8102e;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-postular:hover {
+    background-color: #c8102e;
+  }
+  
+  /* === No data === */
+  .no-data {
+    text-align: center;
+    color: #777;
+    padding: 50px 0;
+    font-size: 1.1rem;
+  }
+  

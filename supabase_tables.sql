@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS postulaciones (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+
+
 -- Paso 4: Crear índices para mejorar el rendimiento
 CREATE INDEX IF NOT EXISTS idx_postulaciones_company_id ON postulaciones(company_id);
 CREATE INDEX IF NOT EXISTS idx_postulaciones_modalidad_id ON postulaciones(modalidad_id);

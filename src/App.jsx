@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { WaitingRoom } from './components/WaitingRoom'
 import { StudentDashboard } from './pages/StudentDashboard'
 import { CompanyDashboard } from './pages/CompanyDashboard'
+import { AdminDashboard } from './pages/AdminDashboard'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
 function App() {
@@ -38,6 +39,15 @@ function App() {
           element={
             <ProtectedRoute requiredRole="company">
               <CompanyDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path='/admin-dashboard' 
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
             </ProtectedRoute>
           } 
         />

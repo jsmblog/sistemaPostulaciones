@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getPostulaciones } from "../services/postulations";
+import "./StudentDashboard.css";
 
 export const StudentDashboard = () => {
   const [postulaciones, setPostulaciones] = useState([]);
   const [loading, setLoading] = useState(true);
-  console.log(postulaciones)
+
   useEffect(() => {
     const fetchPostulaciones = async () => {
       const data = await getPostulaciones();
@@ -15,28 +16,48 @@ export const StudentDashboard = () => {
     fetchPostulaciones();
   }, []);
 
-  if (loading) return <p>Cargando postulaciones...</p>;
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <p>Cargando postulaciones...</p>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Student Dashboard</h1>
-      <h2>Postulaciones disponibles</h2>
+    <div className="dashboard-container">
+      <div className="dashboard-content">
+        <header className="dashboard-header">
+          <h1>Panel del Estudiante</h1>
+          <p>Consulta las pasantías disponibles en la ULEAM</p>
+        </header>
 
-      {postulaciones.length === 0 ? (
-        <p>No hay postulaciones disponibles.</p>
-      ) : (
-        <ul>
-          {postulaciones.map((p) => (
-            <li key={p.id}>
-              <strong>{p.area}</strong> — {p.localidad} <br />
-              <span>Duración: {p.duracion}</span>
-              <br />
-              <small>{p.requisitos}</small>
-              <hr />
-            </li>
-          ))}
-        </ul>
-      )}
+        {postulaciones.length === 0 ? (
+          <div className="no-data">
+            <p>No hay postulaciones disponibles.</p>
+          </div>
+        ) : (
+          <div className="postulaciones-grid">
+            {postulaciones.map((p) => (
+              <div className="postulacion-card" key={p.id}>
+                <div className="card-content">
+                  <h3>{p.area}</h3>
+                  <p>
+                    <strong>Localidad:</strong> {p.localidad}
+                  </p>
+                  <p>
+                    <strong>Duración:</strong> {p.duracion}
+                  </p>
+                  <p>
+                    <strong>Requisitos:</strong> {p.requisitos}
+                  </p>
+                </div>
+                <button className="btn-postular">Postularme</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

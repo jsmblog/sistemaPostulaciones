@@ -1,0 +1,331 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+
+.admin-dashboard-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f5f5 0%, #ffffff 60%, #f9f3f3 100%);
+  padding: 2rem 1.5rem;
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+}
+
+.admin-dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.admin-dashboard-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.admin-dashboard-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: #c8102e;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.admin-dashboard-subtitle {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: #666;
+  margin: 0;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card h3 {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 0.75rem 0;
+}
+
+.stat-number {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: #c8102e;
+  margin: 0;
+}
+
+.admin-filters {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  color: #242424;
+}
+
+.filter-select {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(200, 16, 46, 0.3);
+  border-radius: 12px;
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #c8102e;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.15);
+}
+
+.admin-postulaciones-list {
+  margin-top: 2rem;
+}
+
+.admin-list-title {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: #242424;
+  margin: 0 0 1.5rem 0;
+}
+
+.admin-empty-state {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.admin-empty-state p {
+  color: #666;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  margin: 0;
+}
+
+.admin-postulaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-postulacion-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.admin-postulacion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(200, 16, 46, 0.1);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-card-title {
+  font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+  font-weight: 700;
+  color: #c8102e;
+  margin: 0;
+  flex: 1;
+}
+
+.admin-estado-badge {
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.admin-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-card-info {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.admin-info-label {
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1.8vw, 0.9rem);
+  color: #666;
+  min-width: 120px;
+}
+
+.admin-info-value {
+  font-size: clamp(0.85rem, 1.8vw, 0.9rem);
+  color: #242424;
+  flex: 1;
+  word-break: break-word;
+}
+
+.admin-card-actions {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(200, 16, 46, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-card-actions label {
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1.8vw, 0.9rem);
+  color: #242424;
+}
+
+.admin-estado-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(200, 16, 46, 0.3);
+  border-radius: 12px;
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  background-color: #ffffff;
+  cursor: pointer;
+  width: 100%;
+}
+
+.admin-estado-select:focus {
+  outline: none;
+  border-color: #c8102e;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.15);
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .admin-dashboard-page {
+    padding: 2rem 1.5rem;
+  }
+
+  .admin-postulaciones-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+/* Mobile Large */
+@media (max-width: 768px) {
+  .admin-dashboard-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .admin-filters {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .admin-postulaciones-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .admin-postulacion-card {
+    padding: 1.25rem;
+  }
+
+  .admin-card-header {
+    flex-direction: column;
+  }
+}
+
+/* Mobile Small */
+@media (max-width: 480px) {
+  .admin-dashboard-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .admin-dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .admin-postulacion-card {
+    padding: 1rem;
+  }
+
+  .admin-card-info {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .admin-info-label {
+    min-width: auto;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+  .admin-dashboard-page {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .admin-postulacion-card {
+    padding: 0.875rem;
+  }
+}
+
