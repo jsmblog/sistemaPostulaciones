@@ -27,7 +27,7 @@ export const PopUp = ({ isOpen, onClose, onSelectRole }) => {
           </button>
           <button
             className="popup-btn popup-btn-secondary"
-            onClick={() => handleRoleSelect("employer")}
+            onClick={() => handleRoleSelect("company")}
           >
             Empresa
           </button>
