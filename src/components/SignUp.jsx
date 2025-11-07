@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/connection';
+import { insertUserData } from '../services/insert';
 
 export const SignUp = ({ rol }) => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export const SignUp = ({ rol }) => {
     password: '',
     contact: '',
   });
+  
+  const [loading, setLoading] = useState(false); // NUEVO: Estado de carga
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,84 +26,143 @@ export const SignUp = ({ rol }) => {
 
   const handleSubmitRegister = async (event) => {
     event.preventDefault();
+    
+    // Validación básica
+    if (dataForm.password.length < 6) {
+      alert("⚠ La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+    
+    setLoading(true); // Bloquear el botón
+    
     try {
-      const { data, error } = await supabase.auth.signUp(
-        { 
-          email: dataForm.email, 
-          password: dataForm.password 
-        },
-        {
-          data: { 
+      const { data, error } = await supabase.auth.signUp({
+        email: dataForm.email,
+        password: dataForm.password,
+        options: {
+          data: {
             name: dataForm.name,
             rol,
-            email: dataForm.email 
+            contact: dataForm.contact
           },
-          redirectTo: `${window.location.origin}/confirm-email`
         }
-      );
+      });
 
       if (error) {
         alert("⚠ Ha ocurrido un error: " + error.message);
+        setLoading(false);
         return;
       }
 
-      alert('Registro exitoso. Por favor revisa tu correo para verificar la cuenta.');
-      setDataForm({
-        name: '',
-        email: '',
-        password: '',
-        contact: '',
-      });
-      navigate("/waiting-room");
+      // Verificar si el usuario ya existe
+      if (data.user && !data.user.identities?.length) {
+        alert("⚠ Este correo ya está registrado. Por favor inicia sesión.");
+        setLoading(false);
+        return;
+      }
 
-      console.log("Data de registro (auth):", data);
+      if (data.user) {
+        // Insertar datos adicionales en la tabla correspondiente
+        const insertResult = await insertUserData({
+          id: data.user.id,
+          name: dataForm.name,
+          email: dataForm.email,
+          contact: dataForm.contact,
+          rol
+        });
+
+        if (insertResult.error) {
+          console.error('Error guardando datos adicionales:', insertResult.error);
+          alert("⚠ Error al guardar información adicional. Contacta a soporte.");
+          setLoading(false);
+          return;
+        }
+        
+        // Cerrar sesión para que espere en waiting-room
+        await supabase.auth.signOut();
+        
+        alert('✅ Registro exitoso. Por favor revisa tu correo para verificar la cuenta.');
+        
+        // Limpiar formulario
+        setDataForm({
+          name: '',
+          email: '',
+          password: '',
+          contact: '',
+        });
+        
+        // Navegar a waiting room DESPUÉS de cerrar sesión
+        navigate("/waiting-room", { replace: true });
+      }
 
     } catch (err) {
-      console.log("Error al registrar:", err?.message || err);
+      console.error("Error al registrar:", err);
       alert("⚠ Ha ocurrido un error inesperado al registrarte.");
+    } finally {
+      setLoading(false); // Desbloquear el botón
     }
   };
 
   return (
-    <main>
-      <h1>Regístrese ahora</h1>
-     
+    <div>
+      <h2>Regístrese ahora</h2>
       <form onSubmit={handleSubmitRegister}>
-        <label htmlFor="name">
-          {isStudent ? "Nombre Completo" : "Nombre de la empresa"}
-        </label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          value={dataForm.name}
-          onChange={handleChange}
-          required
-        />
-        
-        <label htmlFor="email">Correo Electrónico</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          value={dataForm.email}
-          onChange={handleChange}
-          required
-        />
-        
-        <label htmlFor="password">Contraseña</label>
-        <input 
-          type="password" 
-          id="password" 
-          name="password" 
-          value={dataForm.password}
-          onChange={handleChange}
-          required
-          minLength={6}
-        />
-        
-        <button type="submit">Registrarse</button>
+        <div>
+          <label>{isStudent ? "Nombre Completo" : "Nombre de la empresa"}</label>
+          <input
+            type="text"
+            name="name"
+            value={dataForm.name}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            minLength={3}
+          />
+        </div>
+
+        <div>
+          <label>Correo Electrónico</label>
+          <input
+            type="email"
+            name="email"
+            value={dataForm.email}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <div>
+          <label>Contraseña</label>
+          <input
+            type="password"
+            name="password"
+            value={dataForm.password}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            minLength={6}
+            placeholder="Mínimo 6 caracteres"
+          />
+        </div>
+
+        <div>
+          <label>{isStudent ? "Teléfono de contacto" : "Teléfono de la empresa"}</label>
+          <input
+            type="tel"
+            name="contact"
+            value={dataForm.contact}
+            onChange={handleChange}
+            placeholder="+593 99 999 9999"
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registrando...' : 'Registrarse'}
+        </button>
       </form>
-    </main>
+    </div>
   );
 };
